@@ -4,6 +4,7 @@ export const mockUsers: User[] = [
   { id: '1', name: 'Pak Guru Budi', username: 'guru', role: 'guru' },
   { id: '2', name: 'Bu Ani (Kesiswaan)', username: 'kesiswaan', role: 'kesiswaan' },
   { id: '3', name: 'Pak Andi (TU)', username: 'tu', role: 'tu' },
+  { id: '4', name: 'Dr. H. Mulyadi (Kepala Sekolah)', username: 'kepsek', role: 'kepsek' },
 ];
 
 export const mockStudents: Student[] = [

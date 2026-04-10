@@ -4,6 +4,7 @@ import LoginPage from './pages/LoginPage';
 import GuruDashboard from './pages/GuruDashboard';
 import KesiswaanDashboard from './pages/KesiswaanDashboard';
 import TUDashboard from './pages/TUDashboard';
+import KepsekDashboard from './pages/KepsekDashboard';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           <Route path="/guru" element={<GuruDashboard />} />
           <Route path="/kesiswaan" element={<KesiswaanDashboard />} />
           <Route path="/tu" element={<TUDashboard />} />
+          <Route path="/kepsek" element={<KepsekDashboard />} />
         </Routes>
       </div>
     </Router>
