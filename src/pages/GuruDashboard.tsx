@@ -10,6 +10,7 @@ import {
   Upload, 
   CheckCircle2, 
   ChevronLeft,
+  ChevronDown,
   X,
   Home,
   BarChart3,
@@ -33,6 +34,7 @@ const GuruDashboard = () => {
   // New states for mass attendance
   const [selectedClass, setSelectedClass] = useState<string | null>(null);
   const [attendanceRecords, setAttendanceRecords] = useState<Record<string, 'alpha' | 'izin' | 'sakit'>>({});
+  const [openSection, setOpenSection] = useState<'alpha' | 'izin' | 'sakit' | null>(null);
 
   // Form states
   const [absensiStatus, setAbsensiStatus] = useState<'hadir' | 'izin' | 'sakit' | 'alpha'>('hadir');
@@ -56,6 +58,13 @@ const GuruDashboard = () => {
     
     return matchesSearch;
   });
+
+  const stats = {
+    alpha: Object.values(attendanceRecords).filter(s => s === 'alpha').length,
+    izin: Object.values(attendanceRecords).filter(s => s === 'izin').length,
+    sakit: Object.values(attendanceRecords).filter(s => s === 'sakit').length,
+    hadir: filteredStudents.length - Object.keys(attendanceRecords).length
+  };
 
   const handleBulkSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -191,53 +200,134 @@ const GuruDashboard = () => {
                 </div>
 
                 <form onSubmit={handleBulkSubmit} className="space-y-4 pb-24">
-                  <div className="space-y-3">
-                    {filteredStudents.map(student => (
-                      <div 
-                        key={student.id}
-                        className="p-4 bg-white border border-slate-200 rounded-2xl flex flex-col gap-4 shadow-sm"
-                      >
-                        <div className="flex items-center gap-4">
-                          <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center font-bold text-slate-600">
-                            {student.name.charAt(0)}
-                          </div>
-                          <div>
-                            <h3 className="font-bold text-slate-800 text-sm">{student.name}</h3>
-                            <p className="text-[10px] text-slate-400 font-medium">{student.nisn}</p>
-                          </div>
-                        </div>
-                        
-                        <div className="grid grid-cols-3 gap-2">
-                          {(['alpha', 'izin', 'sakit'] as const).map((status) => (
-                            <button
-                              key={status}
-                              type="button"
-                              onClick={() => {
-                                setAttendanceRecords(prev => {
-                                  const next = { ...prev };
-                                  if (next[student.id] === status) {
-                                    delete next[student.id];
-                                  } else {
-                                    next[student.id] = status;
-                                  }
-                                  return next;
-                                });
-                              }}
-                              className={`py-2 px-1 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all border-2 ${
-                                attendanceRecords[student.id] === status 
-                                  ? status === 'alpha' ? 'bg-red-50 border-red-500 text-red-600' :
-                                    status === 'izin' ? 'bg-amber-50 border-amber-500 text-amber-600' :
-                                    'bg-blue-50 border-blue-500 text-blue-600'
-                                  : 'bg-white border-slate-100 text-slate-400'
-                              }`}
-                            >
-                              {status === 'alpha' ? 'A' : status === 'izin' ? 'I' : 'S'}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                    ))}
+                  {/* Summary Bar */}
+                  <div className="p-4 bg-green-50 border border-green-200 rounded-2xl flex justify-between items-center shadow-sm">
+                    <div className="flex items-center gap-2">
+                      <UserCheck className="w-5 h-5 text-green-600" />
+                      <span className="text-sm font-bold text-green-700">Estimasi Hadir</span>
+                    </div>
+                    <span className="text-xl font-bold text-green-600">{stats.hadir} <span className="text-xs">Siswa</span></span>
                   </div>
+
+                  {/* Categories */}
+                  {(['sakit', 'izin', 'alpha'] as const).map(status => (
+                    <div key={status} className="premium-card bg-white border border-slate-200 overflow-hidden">
+                        {/* Header */}
+                        <button 
+                           type="button"
+                           onClick={() => setOpenSection(openSection === status ? null : status)}
+                           className="w-full p-5 flex items-center justify-between hover:bg-slate-50 transition-colors"
+                        >
+                           <div className="flex items-center gap-4">
+                              <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-bold ${
+                                status === 'sakit' ? 'bg-blue-50 text-blue-600' :
+                                status === 'izin' ? 'bg-amber-50 text-amber-600' :
+                                'bg-red-50 text-red-600'
+                              }`}>
+                                {status === 'sakit' ? 'S' : status === 'izin' ? 'I' : 'A'}
+                              </div>
+                              <div className="text-left">
+                                <h3 className="font-bold text-slate-800 capitalize">{status}</h3>
+                                <p className="text-xs text-slate-400 font-medium">{stats[status]} Terpilih</p>
+                              </div>
+                           </div>
+                           <ChevronDown className={`w-5 h-5 text-slate-400 transition-transform ${openSection === status ? 'rotate-180' : ''}`} />
+                        </button>
+
+                        {/* Selected Names Summary */}
+                        {Object.keys(attendanceRecords).filter(id => attendanceRecords[id] === status).length > 0 && (
+                          <div className="px-5 pb-4 flex flex-wrap gap-2">
+                            {Object.keys(attendanceRecords)
+                              .filter(id => attendanceRecords[id] === status)
+                              .map(id => {
+                                const s = mockStudents.find(student => student.id === id);
+                                return (
+                                  <span key={id} className={`px-3 py-1 rounded-full text-[10px] font-bold border flex items-center gap-2 ${
+                                    status === 'sakit' ? 'bg-blue-50 border-blue-200 text-blue-700' :
+                                    status === 'izin' ? 'bg-amber-50 border-amber-200 text-amber-700' :
+                                    'bg-red-50 border-red-200 text-red-700'
+                                  }`}>
+                                    {s?.name}
+                                    <button 
+                                       type="button"
+                                       onClick={(e) => {
+                                         e.stopPropagation();
+                                         setAttendanceRecords(prev => {
+                                           const next = {...prev};
+                                           delete next[id];
+                                           return next;
+                                         });
+                                       }}
+                                       className="hover:text-slate-900"
+                                    >
+                                      <X className="w-3 h-3" />
+                                    </button>
+                                  </span>
+                                )
+                              })}
+                          </div>
+                        )}
+
+                        {/* Accordion Content (Selection List) */}
+                        <AnimatePresence>
+                          {openSection === status && (
+                            <motion.div
+                              initial={{ height: 0, opacity: 0 }}
+                              animate={{ height: 'auto', opacity: 1 }}
+                              exit={{ height: 0, opacity: 0 }}
+                              className="border-t border-slate-100 bg-slate-50/50 overflow-hidden"
+                            >
+                              <div className="p-4 space-y-2 max-h-[300px] overflow-y-auto">
+                                {filteredStudents.map(student => {
+                                  const currentStatus = attendanceRecords[student.id];
+                                  const isDisabled = currentStatus && currentStatus !== status;
+                                  return (
+                                    <button
+                                      key={student.id}
+                                      type="button"
+                                      disabled={isDisabled}
+                                      onClick={() => {
+                                        setAttendanceRecords(prev => {
+                                          const next = { ...prev };
+                                          if (next[student.id] === status) {
+                                            delete next[student.id];
+                                          } else {
+                                            next[student.id] = status;
+                                          }
+                                          return next;
+                                        });
+                                      }}
+                                      className={`w-full p-3 rounded-xl flex items-center justify-between text-left transition-all border ${
+                                        attendanceRecords[student.id] === status
+                                          ? status === 'sakit' ? 'bg-blue-600 border-blue-600 text-white shadow-lg' :
+                                            status === 'izin' ? 'bg-amber-500 border-amber-500 text-white shadow-lg' :
+                                            'bg-red-600 border-red-600 text-white shadow-lg'
+                                          : 'bg-white border-slate-200 text-slate-600 hover:border-slate-300'
+                                      } ${isDisabled ? 'opacity-30 grayscale cursor-not-allowed' : ''}`}
+                                    >
+                                      <div className="flex items-center gap-3">
+                                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold ${
+                                          attendanceRecords[student.id] === status ? 'bg-white/20' : 'bg-slate-100 text-slate-400'
+                                        }`}>
+                                          {student.name.charAt(0)}
+                                        </div>
+                                        <div>
+                                          <p className="text-sm font-bold">{student.name}</p>
+                                          <p className={`text-[10px] ${attendanceRecords[student.id] === status ? 'text-white/70' : 'text-slate-400'}`}>
+                                            NISN: {student.nisn}
+                                          </p>
+                                        </div>
+                                      </div>
+                                      {attendanceRecords[student.id] === status && <CheckCircle2 className="w-5 h-5" />}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                    </div>
+                  ))}
 
                   <button 
                     type="submit"
