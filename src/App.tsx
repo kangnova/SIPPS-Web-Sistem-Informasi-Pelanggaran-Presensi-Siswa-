@@ -6,6 +6,8 @@ import KesiswaanDashboard from './pages/KesiswaanDashboard';
 import TUDashboard from './pages/TUDashboard';
 import KepsekDashboard from './pages/KepsekDashboard';
 
+import AdminDashboard from './pages/AdminDashboard';
+
 function App() {
   return (
     <Router>
@@ -17,10 +19,12 @@ function App() {
           <Route path="/kesiswaan" element={<KesiswaanDashboard />} />
           <Route path="/tu" element={<TUDashboard />} />
           <Route path="/kepsek" element={<KepsekDashboard />} />
+          <Route path="/admin" element={<AdminDashboard />} />
         </Routes>
       </div>
     </Router>
   );
 }
+
 
 export default App;

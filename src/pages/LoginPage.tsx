@@ -27,7 +27,7 @@ const LoginPage = () => {
         localStorage.setItem('user', JSON.stringify(user));
         navigate(`/${user.role}`);
       } else {
-        setError('Username atau password salah. Coba gunakan: guru, kesiswaan, tu, atau kepsek');
+        setError('Username atau password salah. Coba gunakan: guru, kesiswaan, tu, kepsek, atau admin');
         setIsLoading(false);
       }
     }, 1200);
@@ -59,7 +59,7 @@ const LoginPage = () => {
                 type="text" 
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                placeholder="Masukkan username (guru/kesiswaan/tu/kepsek)"
+                placeholder="Masukkan username (guru/kesiswaan/tu/kepsek/admin)"
                 className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all outline-none"
                 required
               />

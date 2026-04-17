@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { ShieldCheck, Users, FileText, ArrowRight, GraduationCap, School } from 'lucide-react';
+import { ShieldCheck, Users, FileText, ArrowRight, GraduationCap, School, Database } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const LandingPage = () => {
@@ -50,8 +50,16 @@ const LandingPage = () => {
       icon: <School className="w-8 h-8 text-indigo-600" />,
       link: '/login?role=kepsek',
       color: 'bg-indigo-50'
+    },
+    {
+      title: 'Administrator',
+      description: 'Kelola user, data master siswa/guru, dan konfigurasi sistem.',
+      icon: <Database className="w-8 h-8 text-slate-600" />,
+      link: '/login?role=admin',
+      color: 'bg-slate-50'
     }
   ];
+
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-slate-50">
