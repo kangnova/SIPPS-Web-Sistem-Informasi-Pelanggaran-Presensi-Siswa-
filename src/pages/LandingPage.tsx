@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { ShieldCheck, Users, FileText, ArrowRight, GraduationCap } from 'lucide-react';
+import { ShieldCheck, Users, FileText, ArrowRight, GraduationCap, School } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const LandingPage = () => {
@@ -43,6 +43,13 @@ const LandingPage = () => {
       icon: <ShieldCheck className="w-8 h-8 text-blue-600" />,
       link: '/login?role=tu',
       color: 'bg-blue-50'
+    },
+    {
+      title: 'Kepala Sekolah',
+      description: 'Pantau statistik kedisiplinan sekolah dan tren grafik perilaku siswa.',
+      icon: <School className="w-8 h-8 text-indigo-600" />,
+      link: '/login?role=kepsek',
+      color: 'bg-indigo-50'
     }
   ];
 
@@ -101,7 +108,7 @@ const LandingPage = () => {
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-6xl"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full max-w-7xl"
         >
           {roles.map((role, idx) => (
             <motion.div 
